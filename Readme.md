@@ -85,7 +85,8 @@ The system's database schema is optimized for managing quizzes, storing user per
 ## Project Structure
 
 The project directory is organized to ensure a clear separation of concerns:
-File heirarchy:
+
+Directory map:
 
 ```plaintext
 OnlineQuizSystem/
