@@ -1,182 +1,224 @@
-Here's a detailed documentation outline for the Online Quiz System project. This guide is structured in chapters to cover all aspects of the project, from the core functionalities to the codebase structure, design, and testing.  
+
+# <p align = center> Online Quiz System </p>
+
+## Project Overview
+
+The **Online Quiz System** is a web application designed for users to participate in quizzes with dynamic question sets, track their scores, and receive comprehensive reports on their performance. Built for educational and professional settings, this platform emphasizes ease of use, real-time feedback, and detailed tracking. With its robust architecture, the system can handle multiple users and a constantly updated question bank.
+
+### Project Goals
+1. **User-Friendly Interface**: Provide seamless registration, login, and quiz access.
+2. **Dynamic Question Management**: Allow admins to add, edit, and delete questions.
+3. **Automated Scoring**: Deliver immediate feedback and learning insights.
+4. **Detailed Reporting**: Track user progress over time, highlighting strengths and improvement areas.
+5. **Logging and Error Management**: Centralized tracking of user actions and error handling for smooth operation.
 
 ---
 
-## Online Quiz System Documentation
+## Features
+
+- **Dynamic Question Bank**: The question bank can be managed by admin users who can add, update, or remove questions to keep quizzes relevant.
+- **User Authentication**: Secure user registration and login functionality ensures only registered users can access quizzes.
+- **Real-Time Scoring**: Immediate feedback on quiz completion allows users to learn from mistakes.
+- **Comprehensive Reporting**: Users can view detailed reports on their performance, tracking progress over time.
+- **Error Logging**: The system logs user actions, quiz attempts, and errors to monitor activities and maintain stability.
+- **Testing**: Includes both unit and integration tests using JUnit, ensuring functionality and reliability.
 
 ---
 
-### Chapter 1: Introduction
+## Application Architecture
 
-#### 1.1 Overview
-The Online Quiz System is a web-based platform allowing users to participate in quizzes with a dynamic question bank, track their scores, analyze performance, and manage quiz content. This system offers a complete user experience with features for user registration, login, quiz participation, scoring, and detailed reporting.
+The **Online Quiz System** is built using a three-tier **MVC (Model-View-Controller)** architecture. This design pattern ensures a clean separation of concerns and allows easy scalability and maintainability.
 
-#### 1.2 Objective
-The system's primary goal is to provide an efficient and scalable way to handle quizzes, dynamically manage questions, and record user performance and progress. 
+### Architectural Layers
+1. **Controllers**: This layer handles all incoming HTTP requests. Each request is routed to the appropriate service, and responses are structured in JSON. Key controllers include:
+   - **UserController**: Manages user registration, login, and profile.
+   - **QuizController**: Manages quiz participation, question retrieval, and answer submission.
+   - **OnlineQuizSystemController**: Offers general controls, such as health checks and system configurations.
+   
+2. **Services**: This layer contains business logic and coordinates data processing. Service classes include:
+   - **UserService**: Manages user-related operations, including authentication and session handling.
+   - **QuizService**: Controls quiz-related logic, such as scoring, question selection, and performance tracking.
+   - **OnlineQuizSystemService**: Manages overarching application functions and coordinates between other services as required.
 
-#### 1.3 Features
-- **Dynamic Question Bank Management**: Admin users can manage quiz questions easily.
-- **User Management**: Supports user registration, login, and profile management.
-- **Quiz Participation and Scoring**: Users can take quizzes, receive scores, and view results.
-- **Detailed Reporting**: Each user’s performance is logged and reported with accuracy.
-- **Error Logging**: Centralized logging for quiz attempts, performance tracking, and error handling.
-- **Testing**: Integration and unit tests for critical components using JUnit.
+3. **Repositories**: These classes manage data storage and retrieval using Spring Data JPA. Key repositories include:
+   - **UserRepository**: Handles CRUD operations for user data.
+   - **QuizAttemptRepository**: Stores each quiz attempt and associated data.
+   - **UserAnswerRepository**: Logs each answer submitted by users.
+   - **OnlineQuizSystemRepository**: Manages application-wide settings and configurations.
 
----
-
-### Chapter 2: System Architecture
-
-#### 2.1 Architectural Overview
-The project follows a **Spring Boot MVC (Model-View-Controller)** architecture, providing a clean separation of concerns, modular design, and easy scalability.
-
-#### 2.2 Components
-- **Controller Layer**: Handles HTTP requests and routes them to services. Controllers manage user requests and responses for user registration, login, quiz participation, and reporting.
-- **Service Layer**: Contains business logic for user authentication, quiz participation, score calculation, and question management.
-- **Repository Layer**: Manages data persistence with Spring Data JPA, handling CRUD operations for users, quizzes, attempts, and results.
-- **Exception Layer**: Centralized exception handling for custom and global exceptions.
-- **Entity Layer**: Maps Java classes to database tables to manage data representation.
+4. **Entities**: Represent database tables, defining key data structures for the system. Entity classes include:
+   - **User**: Contains user data such as ID, username, password, role, etc.
+   - **QuizAttempt**: Logs each attempt with the score, time, and user ID.
+   - **UserAnswer**: Tracks each answer provided by the user, indicating correctness.
+   - **Question**: Stores question text, multiple-choice options, and correct answers.
 
 ---
 
-### Chapter 3: Code Structure and Modules
+## Tech Stack
 
-#### 3.1 Directory Structure
+This system is developed using industry-standard tools for a stable and scalable backend architecture:
 
-```
+- **Java**: A robust programming language that offers stability and scalability.
+- **Spring Boot**: Provides a framework for quick setup and development, along with dependency management.
+- **Spring MVC**: Defines the MVC structure for managing controllers and views.
+- **Spring Data JPA**: Simplifies database interaction, handling common CRUD operations.
+- **Spring Security**: Provides authentication and authorization to secure the application.
+- **MySQL**: A relational database that stores user data, quiz questions, and results.
+- **Maven**: Manages dependencies and builds, ensuring efficient development.
+- **JUnit and Mockito**: Enables unit and integration testing for robust functionality.
+- **SLF4J/Logback**: Provides flexible logging configurations for tracking application behavior.
+- **Spring Boot Actuator**: Monitors system health, uptime, and error rates.
+
+---
+
+## Database Schema
+
+The system's database schema is optimized for managing quizzes, storing user performance data, and logging quiz attempts.
+
+- **User Table**: Stores user credentials and roles, such as username, password (encrypted), email, and role (e.g., Admin or User).
+- **Question Table**: Holds quiz questions, each with a unique ID, question text, multiple-choice options, and the correct answer.
+- **Quiz_Attempt Table**: Records each quiz attempt, storing the user ID, score, and timestamps for the attempt's start and end.
+- **User_Answer Table**: Tracks the answers provided by users, with fields for question ID, selected answer, correctness, and attempt ID.
+
+---
+
+## Project Structure
+
+The project directory is organized to ensure a clear separation of concerns:
+File heirarchy:
+
+```plaintext
 OnlineQuizSystem/
+├── .idea/                                  # IntelliJ IDEA project files
+│   ├── compiler.xml
+│   ├── dbnavigator.xml
+│   ├── encodings.xml
+│   ├── jarRepositories.xml
+│   ├── misc.xml
+│   ├── workspace.xml
+│   └── .gitignore
+├── .mvn/                                   # Maven wrapper files
+│   └── wrapper/
+│       ├── maven-wrapper.properties
 ├── src/
 │   ├── main/
 │   │   ├── java/com/incture/OnlineQuizSystem/
-│   │   │   ├── Controller/
-│   │   │   ├── Service/
-│   │   │   ├── Repository/
-│   │   │   ├── Entity/
-│   │   │   ├── Exception/
+│   │   │   ├── Controller/                 # Controller classes for HTTP request handling
+│   │   │   │   ├── OnlineQuizSystemController.java
+│   │   │   │   ├── QuizController.java
+│   │   │   │   └── UserController.java
+│   │   │   ├── Entity/                     # Data model classes mapped to database tables
+│   │   │   │   ├── OnlineQuizSystem.java
+│   │   │   │   ├── QuizAttempt.java
+│   │   │   │   ├── User.java
+│   │   │   │   └── UserAnswer.java
+│   │   │   ├── Exception/                  # Custom exception classes for error handling
+│   │   │   │   ├── GlobalExceptionHandler.java
+│   │   │   │   ├── InvalidAnswerException.java
+│   │   │   │   └── QuizNotFoundException.java
+│   │   │   ├── Repository/                 # Interfaces for database CRUD operations
+│   │   │   │   ├── OnlineQuizSystemRepository.java
+│   │   │   │   ├── QuizAttemptRepository.java
+│   │   │   │   ├── UserAnswerRepository.java
+│   │   │   │   └── UserRepository.java
+│   │   │   ├── Service/                    # Business logic for the application
+│   │   │   │   ├── OnlineQuizSystemService.java
+│   │   │   │   ├── QuizService.java
+│   │   │   │   └── UserService.java
+│   │   │   ├── OnlineQuizSystemApplication.java   # Main entry point of the application
 │   │   ├── resources/
-│   │       ├── application.properties
+│   │   │   ├── application.properties      # Configuration file for database, logging, etc.
+│   │   │   ├── templates/                  # Placeholder for HTML templates (if applicable)
+│   │   │   └── static/                     # Placeholder for static resources (CSS, JS, images)
 │   ├── test/
-│       ├── java/com/incture/OnlineQuizSystem/
-│           ├── Controller/
-│           ├── Service/
+│   │   ├── java/com/incture/OnlineQuizSystem/
+│   │   │   ├── Controller/                 # Controller layer unit and integration tests
+│   │   │   │   ├── OnlineQuizSystemControllerTest.java
+│   │   │   │   ├── QuizControllerTest.java
+│   │   │   │   └── UserControllerTest.java
+│   │   │   ├── Service/                    # Service layer unit tests
+│   │   │   │   ├── OnlineQuizSystemServiceTest.java
+│   │   │   │   ├── QuizServiceTest.java
+│   │   │   │   └── UserServiceTest.java
+│   │   │   └── resources/                  # Test resources (if applicable)
+├── target/                                 # Compiled output and generated resources
+│   ├── classes/                            # Compiled application classes
+│   │   ├── application.properties
+│   │   └── com/incture/OnlineQuizSystem/
+│   │       ├── Controller/
+│   │       ├── Entity/
+│   │       ├── Exception/
+│   │       ├── Repository/
+│   │       └── Service/
+│   ├── test-classes/                       # Compiled test classes
+│   │   └── com/incture/OnlineQuizSystem/
+│   │       ├── Controller/
+│   │       └── Service/
+├── HELP.md                                 # Optional help file for the project
+├── mvnw                                    # Maven wrapper script for Linux/macOS
+├── mvnw.cmd                                # Maven wrapper script for Windows
+├── pom.xml                                 # Maven Project Object Model (POM) file
+├── .classpath                              # Eclipse configuration file
+├── .project                                # Eclipse project file
+└── .gitignore                              # Git ignore file
+
 ```
 
-#### 3.2 Explanation of Key Modules
-- **Controller Module**: Manages HTTP endpoints.
-- **Service Module**: Implements core business logic for the application.
-- **Repository Module**: Interfaces for database CRUD operations.
-- **Entity Module**: Data models representing tables for persistence.
-- **Exception Module**: Defines custom exceptions for errors.
+
+### Detailed Breakdown
+- **Controller Layer**: Defines endpoints for user interactions, quiz management, and data retrieval.
+- **Service Layer**: Performs data manipulation and enforces business rules.
+- **Repository Layer**: Manages database CRUD operations with Spring Data JPA.
+- **Entity Layer**: Maps Java objects to database tables, simplifying data handling.
+- **Exception Layer**: Contains custom exceptions for robust error handling and user-friendly feedback.
 
 ---
 
-### Chapter 4: Controller Layer
+## Logging and Error Handling
 
-#### 4.1 Overview
-Controllers in the Online Quiz System handle incoming requests, convert them to specific service calls, and return responses in JSON format. Controllers include endpoints for user registration, login, quiz attempts, and reporting.
+**Logging**: SLF4J/Logback is used for application-level logging. Each action and error is logged with details such as timestamp, severity, and stack trace for error cases. Logs provide a trail of actions for auditing and debugging purposes.
 
-#### 4.2 Controller Classes
-- **UserController**: Manages endpoints for user registration, login, and profile management.
-- **QuizController**: Manages quiz-related operations, including quiz initiation, questions, and answers.
-- **OnlineQuizSystemController**: Provides general controls for application health checks or other system-level functionalities.
-
-Each method is annotated with Spring's `@RequestMapping` or related annotations (`@GetMapping`, `@PostMapping`) to map specific HTTP requests to respective actions.
+**Error Handling**: A global exception handler is implemented, ensuring all exceptions are uniformly managed. Sensitive information is hidden from users, while descriptive messages are logged for troubleshooting. 
 
 ---
 
-### Chapter 5: Service Layer
+## Testing
 
-#### 5.1 Overview
-The Service Layer performs business logic and is responsible for data manipulation before persisting or fetching from the repository.
+Testing is a core component of the Online Quiz System to ensure each module functions as intended.
 
-#### 5.2 Service Classes
-- **UserService**: Manages user-related business logic, including user registration, login, authentication, and validation.
-- **QuizService**: Controls the quiz functionalities, such as starting a quiz, fetching questions, calculating scores, and handling user answers.
-- **OnlineQuizSystemService**: Manages overall application functions and coordinates between services as required.
-
-#### 5.3 Key Functions
-- **User Authentication**: Checks user credentials and maintains session validity.
-- **Question Management**: Provides a dynamic question bank for each quiz session.
-- **Score Calculation**: Evaluates user answers and calculates quiz scores.
-- **Performance Analysis**: Tracks and logs user performance data for reports.
+1. **Unit Testing**: Each function is tested in isolation to verify functionality. JUnit and Mockito are used to mock dependencies and test edge cases, covering critical features like user authentication and quiz scoring.
+2. **Integration Testing**: Verifies the interaction between modules, simulating real-world use cases. `MockMvc` is used to mimic HTTP requests, ensuring controllers, services, and repositories work seamlessly.
 
 ---
 
-### Chapter 6: Repository Layer
+## Key API Endpoints
 
-#### 6.1 Overview
-The Repository Layer handles all interactions with the database using **Spring Data JPA**. Each entity has a corresponding repository interface that extends `JpaRepository`.
+- **User Registration**: `POST /api/users/register`  
+  Registers a new user with required details (username, password, email).
 
-#### 6.2 Repository Interfaces
-- **UserRepository**: Performs CRUD operations on user records.
-- **QuizAttemptRepository**: Manages records for each quiz attempt.
-- **UserAnswerRepository**: Tracks answers submitted by each user.
-- **OnlineQuizSystemRepository**: Manages overall system settings or general data.
+- **User Login**: `POST /api/users/login`  
+  Authenticates a user and grants access to quizzes.
 
-Each repository interface allows standard CRUD operations and custom queries when needed.
+- **Start Quiz**: `POST /api/quiz/startQuiz/{quizId}?userId={userId}`  
+  Begins a quiz attempt for a given user and quiz ID.
 
----
+- **Submit Answer**: `POST /api/quiz/{quizId}/attempt/{attemptId}/submitAnswer`  
+  Submits an answer for a specific question in an active quiz attempt.
 
-### Chapter 7: Entity Layer
+- **Complete Quiz**: `POST /api/quiz/{quizId}/attempt/{attemptId}/complete`  
+  Finalizes the quiz attempt, calculates the score, and records the result.
 
-#### 7.1 Overview
-Entities represent the core data structure in the system and are mapped to database tables.
+- **Retrieve Quiz History**: `GET /api/quiz/user/{userId}/history`  
+  Retrieves a user’s past quiz attempts and scores.
 
-#### 7.2 Entity Classes
-- **User**: Represents users with fields for username, password, email, etc.
-- **QuizAttempt**: Stores each quiz attempt, linking users and score details.
-- **UserAnswer**: Records each answer provided by users in a quiz.
-- **OnlineQuizSystem**: Manages general settings or configuration data for the system.
-
-Each entity class is annotated with `@Entity`, with `@Id` for primary keys, `@Column` for column mappings, and `@OneToMany` or `@ManyToOne` for relationships.
+- **Performance Report**: `GET /api/quiz/user/{userId}/performanceReport`  
+  Provides a detailed performance report for the user’s progress over time.
 
 ---
 
-### Chapter 8: Exception Handling
+## Future Enhancements
 
-#### 8.1 Overview
-Custom exceptions in the system allow for detailed error handling, providing specific responses for known error types.
-
-#### 8.2 Exception Classes
-- **InvalidAnswerException**: Thrown when an invalid answer format or content is detected.
-- **QuizNotFoundException**: Raised when a specified quiz is not found in the database.
-- **AuthenticationFailedException**: Indicates failed login or registration due to invalid credentials.
-- **GlobalExceptionHandler**: Catches and logs uncaught exceptions, providing generic error responses.
-
----
-
-### Chapter 9: Logging and Error Handling
-
-#### 9.1 Logging Framework
-The system uses **Spring Boot’s built-in logging** (with SLF4J) for logging events, errors, and user activities. Logging is configured in `application.properties`.
-
-#### 9.2 Error Handling
-The **GlobalExceptionHandler** ensures that all exceptions are logged with relevant details, improving traceability for debugging.
-
----
-
-### Chapter 10: Testing
-
-#### 10.1 Overview
-JUnit tests cover unit and integration testing for controllers, services, and repositories.
-
-#### 10.2 Test Classes
-- **Controller Tests**: Verifies HTTP endpoint responses.
-- **Service Tests**: Validates business logic in service methods.
-- **Integration Tests**: Tests end-to-end functionality.
-
----
-
-### Chapter 11: Configuration and Deployment
-
-#### 11.1 Application Properties
-The `application.properties` file configures database connections, logging levels, and other environment-specific settings.
-
-#### 11.2 Build and Run
-- **Build Tool**: Maven is used for dependencies and project management.
-- **Execution**: The application can be started with `mvn spring-boot:run`.
-
----
-
-### Chapter 12: Conclusion
-
-This documentation provides a comprehensive overview of the Online Quiz System. It covers architecture, code structure, and functionality. Future enhancements could include more complex question types, analytics dashboards, and performance improvements.
+Potential future features include:
+- Adding time-based quizzes.
+- Expanding reporting capabilities with graphical insights.
+- Implementing more complex question types (e.g., true/false, image-based).
